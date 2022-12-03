@@ -6,6 +6,10 @@ const mongoose = require('mongoose')
 
 app.use(cors())
 app.use(express.static('public'))
+// For parsing application/json 
+app.use(express.json()); 
+// For parsing application/x-www-form-urlencoded 
+app.use(express.urlencoded({ extended:true })); 
 
 main().catch(err => console.log(err));
 
@@ -14,15 +18,21 @@ async function main(){
   const db = mongoose.connection;
   db.on("error", console.error.bind(console, "connection error: "));
   db.once("open", function () {
-  console.log("Connected successfully");
-  const userSchema = new mongoose.Schema({
-    username: String
-  });
-  const Users = mongoose.model('Users', userSchema);
-  const frank = new Users({username: 'Frank Xia'});
+    console.log("Connected successfully");
 
-  frank.save();
-  console.log(frank.username)
+    // post username
+    const userSchema = new mongoose.Schema({
+      username: String
+    });
+    const Users = mongoose.model('Users', userSchema);
+    app.post('/api/users', (req, res) => {
+      const input_username = req.body.username;
+      const username = new Users({
+        username: input_username
+      })
+      username.save();    
+    })
+
   });
   
 
