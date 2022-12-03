@@ -30,7 +30,9 @@ async function main(){
       const username = new Users({
         username: input_username
       })
-      username.save();    
+      username.save().then(() => {
+        res.json(username)
+      })
     })
 
   });
